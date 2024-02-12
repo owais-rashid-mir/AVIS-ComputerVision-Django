@@ -1,0 +1,303 @@
+{% load static %}
+<!-- Since the CSS, JS, media files etc is in static folder, so we have to load it first. -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Manage Camera Detections</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  .content-header {
+    background-image: url('{% static "dist/img/img_bg.jpg" %}');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center center;
+    min-height: 100vh;
+    /* Use min-height to ensure the background covers the content */
+    width: 100%;
+    display: flex;
+    /* Use flex to make sure child elements fill the container */
+    flex-direction: column;
+    /* Stack child elements vertically */
+}
+
+/* When hovering over various links in Navbar. */
+.navbar a:hover {
+    padding-left: 5px;
+    transition: all 0.5s ease;
+    background-color: lightgray;
+}
+
+/* webpage buttons */
+.btn {
+    border-radius: 35px !important; /* Use !important to override Bootstrap styles */
+}
+
+
+/* Change the hover color for table rows */
+  table.table-hover tbody tr:hover {
+    background-color: #778899; /* Light Gray */
+  }
+
+/* Custom CSS to control table cell wrapping */
+.table td {
+  white-space: normal; /* Allow text to wrap within cells */
+  word-break: break-word; /* Break words when they overflow the cell */
+}
+
+</style>
+
+
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static "plugins/fontawesome-free/css/all.min.css" %}">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Tempusdominus Bbootstrap 4 -->
+  <link rel="stylesheet" href="{% static "plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" %}">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="{% static "plugins/icheck-bootstrap/icheck-bootstrap.min.css" %}">
+  <!-- JQVMap -->
+  <link rel="stylesheet" href="{% static "plugins/jqvmap/jqvmap.min.css" %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static "dist/css/adminlte.min.css" %}">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="{% static "plugins/overlayScrollbars/css/OverlayScrollbars.min.css" %}">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="{% static "plugins/daterangepicker/daterangepicker.css" %}">
+  <!-- summernote -->
+  <link rel="stylesheet" href="{% static "plugins/summernote/summernote-bs4.css" %}">
+  <!-- Google Font: Source Sans Pro -->
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  {% block custom_css %}{% endblock custom_css %}
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+ <div class="wrapper">
+
+
+     <!-- Top Navbar link -->
+     {% include 'navbar.html' %}
+
+     <!-- Left Sidebar link -->
+     {% include 'sidebar.html' %}
+
+
+
+  <!-- Content Wrapper. Contains main page content -->
+    <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+
+
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">
+              {% block page_title %}
+              {% endblock page_title %}
+            </h1>
+          </div><!-- /.col -->
+
+
+
+
+          <!-- Code for main form/section starts. -->
+            <section class="main-form">
+
+                <!-- Main container starts. -->
+                <div class="container mt-4" id="formsetting">
+
+
+                    <!--  Copy the code of success and error messages from login_page.html and paste it here. -->
+                      <div class="form-group">
+                      {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% if message.tags == 'success' %}
+                        <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+
+
+
+
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="card">
+                          <div class="card-header">
+                            <h1 class="card-title font-weight-bold">Camera Detection Results</h1>
+
+                            <div class="card-tools">
+                              <div class="input-group input-group-sm" style="width: 150px;">
+                                <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                                <div class="input-group-append">
+                                  <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- /.card-header -->
+
+                          <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap table-bordered">
+                              <thead>
+                                <tr>
+                                  <th>Action</th>
+                                  <th>ID</th>
+                                  <!-- <th>Processed Video</th>  -->
+                                  <th style="white-space: pre-line;">Actual License Plate Number</th>
+                                  <th style="white-space: pre-line;">Predicted License Plate Number</th>
+                                  <th>View All Details</th>
+                                  <th>Created At</th>
+
+                                </tr>
+                              </thead>
+
+                              <tbody>
+                              <!-- FOR loop to print all data. 'results' is defined in def manage_detect_image() in views.py -->
+                              {% for result in results %}
+                                <tr>
+
+                                  <td style="min-width: 110px;">
+
+                                    <form method="post" action="{% url 'delete_detect_camera' id=result.id %}" class="d-inline">
+                                      {% csrf_token %}
+                                      <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this record?')">Delete</button>
+                                    </form>
+                                  </td>
+
+                                  <!-- id etc : column names in DetectImage table-->
+                                  <td style="min-width: 80px;">{{ result.id }}</td>
+
+                                  <!--
+                                  <td>
+                                    {% if result.processed_video %}
+                                        <video width="200" height="200" controls>
+                                          <source src="{{ result.processed_video.url }}" type="video/mp4">
+                                          Your browser does not support the video tag.
+                                        </video>
+                                    {% else %}
+
+                                        No Video Available
+                                    {% endif %}
+                                  </td>
+                                  -->
+
+                                  <td>
+                                    {% if result.license_plate_cropped_image %}
+                                        <img src="{{ result.license_plate_cropped_image.url }}" style="width:100px; height:100px;"/>
+                                    {% else %}
+                                        <!-- Handle the case where there's no image available -->
+                                        No Image Available
+                                    {% endif %}
+                                  </td>
+
+                                  <td style="min-width: 40px;">{{ result.license_plate_ocr_text }}</td>
+
+
+                                  <td>
+                                    <a href="{% url 'view_camera_details' result.id %}" class="btn btn-primary">View All Details</a>
+                                  </td>
+
+                                  <td style="min-width: 40px;">{{ result.created_at }}</td>
+
+                                </tr>
+                              {% endfor %}
+                              </tbody>
+
+                            </table>
+
+                          </div>
+                          <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                      </div>
+                    </div>
+
+
+
+
+                </div>
+                <!-- Main container ends. -->
+
+            </section>
+            <!-- Code for main form/section ends -->
+
+
+
+
+            <!-- back to top button -->
+            <a id="back-to-top" href="#" class="btn btn-primary btn-lg back-to-top" role="button"
+                title="Click to return to the top." data-toggle="tooltip" data-placement="left"> <i
+                    class="fa fa-chevron-up"></i> </a>
+
+
+
+
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+     {% block main_content %}{% endblock main_content %}
+
+
+  </div>
+  <!-- /.content-wrapper -->
+  {% include 'footer.html' %}
+
+</div>
+<!-- ./wrapper -->
+
+
+<!-- jQuery -->
+<script src="{% static "plugins/jquery/jquery.min.js" %}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="{% static "plugins/jquery-ui/jquery-ui.min.js" %}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+  $.widget.bridge('uibutton', $.ui.button)
+</script>
+<!-- Bootstrap 4 -->
+<script src="{% static "plugins/bootstrap/js/bootstrap.bundle.min.js" %}"></script>
+<!-- ChartJS -->
+<script src="{% static "plugins/chart.js/Chart.min.js" %}"></script>
+<!-- Sparkline -->
+<script src="{% static "plugins/sparklines/sparkline.js" %}"></script>
+<!-- JQVMap -->
+<script src="{% static "plugins/jqvmap/jquery.vmap.min.js" %}"></script>
+<script src="{% static "plugins/jqvmap/maps/jquery.vmap.usa.js" %}"></script>
+<!-- jQuery Knob Chart -->
+<script src="{% static "plugins/jquery-knob/jquery.knob.min.js" %}"></script>
+<!-- daterangepicker -->
+<script src="{% static "plugins/moment/moment.min.js" %}"></script>
+<script src="{% static "plugins/daterangepicker/daterangepicker.js" %}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{% static "plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js" %}"></script>
+<!-- Summernote -->
+<script src="{% static "plugins/summernote/summernote-bs4.min.js" %}"></script>
+<!-- overlayScrollbars -->
+<script src="{% static "plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js" %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static "dist/js/adminlte.js" %}"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="{% static "dist/js/pages/dashboard.js" %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static "dist/js/demo.js" %}"></script>
+
+
+
+{% block custom_js %}
+{% endblock custom_js %}
+
+</body>
+</html>

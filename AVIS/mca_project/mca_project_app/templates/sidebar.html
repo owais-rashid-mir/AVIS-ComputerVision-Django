@@ -1,0 +1,166 @@
+{% load static %}
+
+<!--Left Sidebar template -->
+
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="/index_homepage" class="brand-link">
+      <span class="brand-text font-weight-light text-center"> <h6> Automatic Vehicle Identification </h6> </span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img src="{% static "dist/img/avatar5.png" %}" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+          <a href="/index_homepage" class="d-block">Owais Rashid</a>
+        </div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <li class="nav-item has-treeview menu-open">
+
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/index_homepage" class="nav-link active">
+                  <i class="fas fa-home nav-icon"></i>
+                  <p>Home</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+
+
+          <li class="nav-item">
+            <a href="{% url 'upload_image' %}" class="nav-link">
+              <i class="nav-icon fas fa-image"></i>
+              <p>
+                Detect On Images
+              </p>
+            </a>
+
+
+          <li class="nav-item">
+            <a href="" class="nav-link">
+              <i class="nav-icon fas fa-video"></i>
+              <p>
+                Detect On Videos
+              </p>
+            </a>
+
+
+          <li class="nav-item">
+            <a href="" class="nav-link">
+              <i class="nav-icon fas fa-camera"></i>
+              <p>
+                Detect In Real-Time
+              </p>
+            </a>
+
+
+          <li class="nav-item">
+            <a href="" class="nav-link">
+              <i class="nav-icon fas fa-sign-in-alt"></i>
+              <p>
+                Login As Admin
+              </p>
+            </a>
+
+
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-images"></i>
+              <p>
+                Image Detections
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                {% url 'manage_detect_image' as manage_detect_image %}
+                <a href="{% url 'manage_detect_image' %}" class="nav-link {% if request.path == manage_detect_image %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Image Detections</p>
+                </a>
+              </li>
+            </ul>
+
+
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-images"></i>
+              <p>
+                Video Detections
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                {% url 'manage_detect_video' as manage_detect_video %}
+                <a href="{% url 'manage_detect_video' %}" class="nav-link {% if request.path == manage_detect_video %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Video Detections</p>
+                </a>
+              </li>
+            </ul>
+
+
+              <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-images"></i>
+              <p>
+                Camera Detections
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                {% url 'manage_detect_camera' as manage_detect_camera %}
+                <a href="{% url 'manage_detect_camera' %}" class="nav-link {% if request.path == manage_detect_camera %} active {% endif %}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Camera Detections</p>
+                </a>
+              </li>
+              </ul>
+
+
+
+            </li>
+
+
+          </li>
+          <li class="nav-header">OTHER QUICK LINKS</li>
+          <li class="nav-item">
+            <a href="" class="nav-link">
+              <i class="nav-icon fas fa-info"></i>
+              <p>
+                About
+                <span class="badge badge-info right"></span>
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="" class="nav-link">
+              <i class="nav-icon fas fa-info-circle"></i>
+              <p>
+                About the Developer
+              </p>
+            </a>
+          </li>
+
+
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
